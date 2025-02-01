@@ -5,27 +5,22 @@
 # Может возвращать список поездов на станции по типу (см. ниже): кол-во грузовых, пассажирских
 # Может отправлять поезда (по одному за раз, при этом, поезд удаляется из списка поездов, находящихся на станции).
 class Station
-  attr_reader :name
+  attr_reader :name, :trains
 
   def initialize(name)
     @name = name
-    @trains = {pass: [], cargo: []}
+    @trains = []
   end
 
-  def all_trains(type: nil)
-    all_trains = type.nil? ? (@trains[:pass] + @trains[:cargo]) : @trains[type]
-    all_trains.map{|train| train.number}.to_s unless all_trains.nil?
+  def trains_by_type(type)
+    trains.select {|train| train.type == type}.count
   end
 
   def accept_train(train)
-    (@trains[train.type] << train unless @trains[train.type].include?(train)) if train.station
-
-    train
+    trains << train
   end
 
   def send_train(train)
-    @trains[train.type].delete(train) if train.station
-
-    train
+    trains.delete(train)
   end
 end

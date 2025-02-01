@@ -16,7 +16,7 @@
 # Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
 
 class Train
-  attr_reader :speed, :length, :station, :number, :type
+  attr_reader :speed, :number, :type, :length
   attr_accessor :route
 
   def initialize(number, type, length)
@@ -24,31 +24,33 @@ class Train
     @type = type
     @length = length
     @speed = 0
-    @route = nil
-    @station = nil
   end
 
   def route=(route)
     @route = route
-    @station = route.start
-  end
-
-  def move_forward
-    @station = next_station
-  end
-
-  def move_back
-    @station = prev_station
-  end
-
-  def prev_station
-    @route.stations.each do |k,v|
-      return k if v == @station
-    end
+    @station_inx = 0
   end
 
   def next_station
-    @route.stations[@station]
+    route.stations[@station_inx + 1]
+  end
+
+  def curr_station
+    route.stations[@station_inx]
+  end
+
+  def prev_station
+    route.stations[@station_inx - 1]
+  end
+
+  def go_next_station
+    puts("curr_station.name = #{curr_station.name}")
+    puts("next_station.name = #{next_station.name}")
+    @station_inx += 1 if next_station
+  end
+
+  def go_prev_station
+    @station_inx -= 1 if prev_station
   end
 
   def speed_up
@@ -68,7 +70,7 @@ class Train
   end
 
   def car_add
-    return @length if @speed > 0
+    return length if speed > 0
 
     @length += 1
   end

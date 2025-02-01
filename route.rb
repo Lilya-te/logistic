@@ -5,34 +5,29 @@
 # Может удалять промежуточную станцию из списка
 # Может выводить список всех станций по-порядку от начальной до конечной
 class Route
-  attr_reader :start, :stations
+  attr_accessor :stations
 
   def initialize(start, finish)
-    @start = start.name
-    @finish = finish.name
-    @stations = {start.name => finish.name}
+    @stations = [start, finish]
   end
 
-  def add_station(station, prev_station)
-    point = @stations[prev_station.name]
-    @stations[prev_station.name] = station.name
-    @stations[station.name] = point
+  def start
+    stations.first
+  end
+
+  def finish
+    stations.last
+  end
+
+  def add_station(station)
+    stations.insert(-1, station)
   end
 
   def drop_station(station)
-    point = @stations.delete(station.name)
-    @stations.each{|k,v| @stations[k] = point if v == station.name}
+    stations.delete(station)
   end
 
-  def print
-    point = @start
-    result = []
-    until @stations[point].nil?
-      result << point
-      point = @stations[point]
-      puts("result = #{result}")
-    end
-
-    (result << point).map{|s| s}.join(' >>> ')
+  def show
+    stations.map { |station| station.name }
   end
 end
