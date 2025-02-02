@@ -11,11 +11,11 @@ class Route
     @stations = [start, finish]
   end
 
-  def start
+  def start_station
     stations.first
   end
 
-  def finish
+  def finish_station
     stations.last
   end
 

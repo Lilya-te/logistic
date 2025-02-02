@@ -35,22 +35,20 @@ class Train
     route.stations[@station_inx + 1]
   end
 
-  def curr_station
+  def current_station
     route.stations[@station_inx]
   end
 
-  def prev_station
+  def previous_station
     route.stations[@station_inx - 1]
   end
 
   def go_next_station
-    puts("curr_station.name = #{curr_station.name}")
-    puts("next_station.name = #{next_station.name}")
     @station_inx += 1 if next_station
   end
 
-  def go_prev_station
-    @station_inx -= 1 if prev_station
+  def go_previous_station
+    @station_inx -= 1 if previous_station
   end
 
   def speed_up
@@ -69,13 +67,13 @@ class Train
     @speed = 0
   end
 
-  def car_add
+  def carriage_add
     return length if speed > 0
 
     @length += 1
   end
 
-  def car_remove
+  def carriage_remove
     return @length if @speed > 0
 
     if @length == 0

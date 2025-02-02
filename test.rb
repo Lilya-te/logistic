@@ -55,11 +55,11 @@ cargo_train.extreme_stop
 # Может прицеплять/отцеплять вагоны (по одному вагону за операцию,
 # метод просто увеличивает или уменьшает количество вагонов).
 # Прицепка/отцепка вагонов может осуществляться только если поезд не движется.
-cargo_train.car_add
-cargo_train.car_add
+cargo_train.carriage_add
+cargo_train.carriage_add
 # puts "Pass train #{cargo_train.number}. Length: #{cargo_train.length} must be 3"
 cargo_train.speed_up
-cargo_train.car_add
+cargo_train.carriage_add
 # puts "Pass train #{cargo_train.number}. Length: #{cargo_train.length} must be 3"
 
 # Может принимать маршрут следования (объект класса Route).
@@ -70,17 +70,17 @@ cargo_train.car_add
 cargo_train.route = route
 pass_train.route = route
 
-puts "Cargo train #{cargo_train.number}. Station: #{cargo_train.curr_station.name} must be #{route.start.name}"
-puts "Pass train #{pass_train.number}. Station: #{pass_train.curr_station.name} must be #{route.start.name}"
+puts "Cargo train #{cargo_train.number}. Station: #{cargo_train.current_station.name} must be #{route.start_station.name}"
+puts "Pass train #{pass_train.number}. Station: #{pass_train.current_station.name} must be #{route.start_station.name}"
 
 cargo_train.go_next_station
 cargo_train.go_next_station
-puts "Cargo train #{cargo_train.number}. Station: #{cargo_train.curr_station.name} must be Kazan"
-cargo_train.go_prev_station
-puts "Cargo train #{cargo_train.number}. Station: #{cargo_train.curr_station.name} must be Moscow"
+puts "Cargo train #{cargo_train.number}. Station: #{cargo_train.current_station.name} must be Kazan"
+cargo_train.go_previous_station
+puts "Cargo train #{cargo_train.number}. Station: #{cargo_train.current_station.name} must be Moscow"
 
 pass_train.go_next_station
-puts "Pass train #{pass_train.number}. Station: #{pass_train.curr_station.name} must be Moscow"
+puts "Pass train #{pass_train.number}. Station: #{pass_train.current_station.name} must be Moscow"
 
 # Класс Station (Станция):
 # Может принимать поезда (по одному за раз)
