@@ -1,6 +1,10 @@
-load 'route.rb'
-load 'station.rb'
-load 'train.rb'
+require_relative 'train'
+require_relative 'cargo_train'
+require_relative 'cargo_carriage'
+require_relative 'passenger_train'
+require_relative 'passenger_carriage'
+require_relative 'route'
+require_relative 'station'
 
 # Класс Station (Станция):
 # Имеет название, которое указывается при ее создании
@@ -31,8 +35,8 @@ route.add_station(ekb)
 # Класс Train (Поезд):
 # Имеет номер (произвольная строка) и тип (грузовой, пассажирский) и количество вагонов,
 # эти данные указываются при создании экземпляра класса
-pass_train = Train.new('P1', :pass, 1)
-cargo_train = Train.new('C1', :cargo, 1)
+pass_train = PassengerTrain.new('P1')
+cargo_train = CargoTrain.new('C1')
 
 # Может набирать скорость
 # puts "Pass train #{pass_train.number}. Speed: #{pass_train.speed}. Length: #{pass_train.length}"
@@ -55,11 +59,11 @@ cargo_train.extreme_stop
 # Может прицеплять/отцеплять вагоны (по одному вагону за операцию,
 # метод просто увеличивает или уменьшает количество вагонов).
 # Прицепка/отцепка вагонов может осуществляться только если поезд не движется.
-cargo_train.carriage_add
-cargo_train.carriage_add
+cargo_train.carriage_add(CargoCarriage.new)
+cargo_train.carriage_add(CargoCarriage.new)
 # puts "Pass train #{cargo_train.number}. Length: #{cargo_train.length} must be 3"
 cargo_train.speed_up
-cargo_train.carriage_add
+cargo_train.carriage_add(CargoCarriage.new)
 # puts "Pass train #{cargo_train.number}. Length: #{cargo_train.length} must be 3"
 
 # Может принимать маршрут следования (объект класса Route).

@@ -16,13 +16,14 @@
 # Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
 
 class Train
-  attr_reader :speed, :number, :type, :length
+  attr_reader :speed, :number, :type
   attr_accessor :route
+  attr_writer :carriages
 
-  def initialize(number, type, length)
+  def initialize(number, type)
     @number = number
     @type = type
-    @length = length
+    @carriages = []
     @speed = 0
   end
 
@@ -67,19 +68,11 @@ class Train
     @speed = 0
   end
 
-  def carriage_add
-    return length if speed > 0
-
-    @length += 1
+  def carriage_add(carriage)
+    @carriages << carriage if type == carriage.type
   end
 
-  def carriage_remove
-    return @length if @speed > 0
-
-    if @length == 0
-      return 0
-    else
-      @length -= 1
-    end
+  def carriage_remove(carriage)
+    @carriages.delete(carriage)
   end
 end
