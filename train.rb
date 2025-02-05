@@ -72,7 +72,7 @@ class Train
     @carriages << carriage if type == carriage.type
   end
 
-  def carriage_remove(carriage)
-    @carriages.delete(carriage)
+  def carriage_remove
+    @carriages.delete_at(-1)
   end
 end

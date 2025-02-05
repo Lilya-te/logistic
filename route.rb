@@ -20,7 +20,7 @@ class Route
   end
 
   def add_station(station)
-    stations.insert(-1, station)
+    stations.insert(-2, station)
   end
 
   def drop_station(station)

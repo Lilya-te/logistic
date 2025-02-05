@@ -1,7 +1,200 @@
+require_relative 'train'
+require_relative 'carriage'
 require_relative 'cargo_train'
 require_relative 'cargo_carriage'
 require_relative 'passenger_train'
 require_relative 'passenger_carriage'
 require_relative 'route'
 require_relative 'station'
-require_relative 'train'
+
+commands = { :create_station => "create station",
+             :create_train => "create train",
+             :create_route => "create route",
+             :create_carriage => "create carriage",
+             :add_route_station => "add route station",
+             :remove_route_station => "remove route station",
+             :assign_route_for_train => "assign route for train",
+             :add_carriage_to_train => "add carriage to train",
+             :remove_carriage_from_train => "remove carriage from train",
+             :move_train_to_the_next_station => "move train to the next station",
+             :move_train_to_the_previous_station => "move train to the previous station",
+             :show_stations_list => "show stations list",
+             :show_trains_list_for_the_station => "show trains list for the station",
+             :stop => "exit",
+             :help => "show commands" }
+@stations_array = []
+@trains_array = []
+@routes_array = []
+
+def choose_route
+  unless @routes_array.empty?
+    puts "Choose the route:"
+    puts "routes - #{@routes_array}"
+    @routes_array.each do |r|
+      puts "#{r.show} - this one? (y/n)"
+      return r if gets.chomp == 'y'
+    end
+  end
+  puts "There is no route!"
+end
+
+def choose_train
+  unless @trains_array.empty?
+    puts "Choose the train:"
+    @trains_array.each do |t|
+      puts "#{t.type} train number #{t.number} - this one? (y/n)"
+      return t if gets.chomp == 'y'
+    end
+  end
+  puts "There is no train!"
+end
+
+def choose_type
+  puts "Train type: passenger or cargo"
+  gets.chomp.upcase.to_sym
+end
+
+def create_station(name)
+  new_station = Station.new(name)
+  @stations_array << new_station
+
+  new_station
+end
+
+def succeed_message(text)
+  puts "#{text} successfully created"
+end
+
+command = nil
+
+puts "Welcome to HAPPY LOGISTIC INTERFACE"
+puts "Input 'help' to show commands!"
+until command == :stop
+  puts "Input your command, please."
+  command = gets.chomp.downcase.to_sym
+
+  unless commands.keys.include?(command)
+    puts "Command #{command} NOT FOUND! Input 'help' to view full command list."
+    next
+  end
+  puts "You want to #{commands[command]}."
+
+  if command == :help
+    puts "You can do:"
+    commands.each { |command, description| puts "#{command} -- '#{description}'" }
+
+  elsif command == :create_station
+    puts "Station name:"
+    name = gets.chomp
+    create_station name
+    succeed_message "Station #{name}"
+
+  elsif command == :create_train
+    type = choose_type
+
+    puts "Train number:"
+    number = gets.chomp
+    @trains_array << Train.new(number, type)
+
+    succeed_message "#{type} train №'#{number}'"
+  elsif command == :create_carriage
+    type = choose_type
+
+    puts "Carriage number:"
+    number = gets.chomp
+    @trains_array << Carriage.new(type)
+
+    succeed_message "#{type} carriage №'#{number}'"
+  elsif command == :create_route
+    puts "Route start station name:"
+    start_station_name = gets.chomp
+
+    puts "Route finish station name:"
+    finish_station_name = gets.chomp
+
+    start_station = @stations_array.find { |s| s.name == start_station_name } || create_station(start_station_name)
+    finish_station = @stations_array.find { |s| s.name == finish_station_name } || create_station(finish_station_name)
+
+    @routes_array << Route.new(start_station, finish_station)
+
+    succeed_message "Route from '#{start_station_name}' to '#{finish_station_name}'"
+  elsif command == :add_route_station # add route station
+    current_route = choose_route
+    next if current_route.nil?
+
+    unless current_route.nil?
+      puts "Chose station name from #{@stations_array.map { |station| station.name }} or input new one."
+      station_name = gets.chomp
+      current_route.add_station(@stations_array.find { |s| s.name == station_name } || create_station(station_name))
+      puts "Station add to route #{current_route.show}"
+    else
+      puts "Route not found"
+    end
+  elsif command == :remove_route_station
+    current_route = choose_route
+    next if current_route.nil?
+
+    current_route.stations.each do |station|
+      puts "Do you want to delete #{station.name}? (y/n)"
+      if gets.chomp == 'y'
+        current_route.drop_station(station)
+      end
+    end
+  elsif command == :assign_route_for_train
+    current_route = choose_route
+    next if current_route.nil?
+
+    current_train = choose_train
+    next if current_train.nil?
+
+    current_train.route = current_route
+    current_train.current_station.accept_train(current_train)
+
+    puts "Train #{current_train.number} is on the route #{current_route.show}"
+  elsif command == :add_carriage_to_train
+    current_train = choose_train
+    next if current_train.nil?
+
+    current_carriage = Carriage.new(current_train.type)
+    current_train.carriage_add(current_carriage)
+    succeed_message("Carriage for train №#{current_train.number}")
+  elsif command == :remove_carriage_from_train
+    current_train = choose_train
+    next if current_train.nil?
+
+    current_train.carriage_remove
+    puts "Carriage for train №#{current_train.number} removed"
+  elsif command == :move_train_to_the_next_station
+    current_train = choose_train
+    next if current_train.nil?
+
+    current_train.current_station.send_train(current_train)
+    current_train.go_next_station
+    current_train.current_station.accept_train(current_train)
+
+    puts "Train №#{current_train.number} is moving forward."
+  elsif command == :move_train_to_the_previous_station
+    current_train = choose_train
+    next if current_train.nil?
+
+    current_train.current_station.send_train(current_train)
+    current_train.go_next_station
+    current_train.current_station.accept_train(current_train)
+
+    puts "Train №#{current_train.number} is moving back."
+  elsif command == :show_stations_list
+    puts "Stations: #{@stations_array}"
+  elsif command == :show_trains_list_for_the_station
+    puts "Stations: #{@stations_array}"
+    if @stations_array.empty?
+      puts "There is no station!"
+      next
+    end
+
+    type = choose_type
+    @stations_array.each do |s|
+      puts "#{s.name} - #{s.trains_by_type(type)}"
+    end
+  end
+end
+puts "Thanks fot your attention!"

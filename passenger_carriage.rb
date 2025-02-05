@@ -1,5 +1,6 @@
-class PassengerCarriage
-  def type
-    :passenger
+class PassengerCarriage < Carriage
+
+  def initialize
+    super(PassengerTrain::TRAIN_TYPE)
   end
 end
