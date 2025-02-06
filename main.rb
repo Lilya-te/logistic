@@ -8,17 +8,17 @@ require_relative 'route'
 require_relative 'station'
 
 class Logistic
-  MENU = [{ id: 1, title: "create station", action: :create_station, description: "create station" },
-          { id: 2, title: "create train", action: :create_train, description: "create train" },
-          { id: 3, title: "create route", action: :create_route, description: "create route" },
-          { id: 4, title: "create carriage", action: :create_carriage, description: "create carriage" },
-          { id: 5, title: "add route station", action: :add_route_station, description: "add route station" },
-          { id: 6, title: "remove route station", action: :remove_route_station, description: "remove route station" },
-          { id: 7, title: "assign route for train", action: :assign_route_for_train, description: "assign route for train" },
+  MENU = [{ id: 1, title: "create station", action: :create_station, description: "create new station" },
+          { id: 2, title: "create train", action: :create_train, description: "create passenger or cargo train" },
+          { id: 3, title: "create route", action: :create_route, description: "create new route" },
+          { id: 4, title: "create carriage", action: :create_carriage, description: "create passenger or cargo carriage" },
+          { id: 5, title: "add route station", action: :add_route_station, description: "add existed or new station to the route" },
+          { id: 6, title: "remove route station", action: :remove_route_station, description: "remove station from route" },
+          { id: 7, title: "assign route for train", action: :assign_route_for_train, description: "assign existed route for existed train" },
           { id: 8, title: "add carriage to train", action: :add_carriage_to_train, description: "add carriage to train" },
           { id: 9, title: "remove carriage from train", action: :remove_carriage_from_train, description: "remove carriage from train" },
-          { id: 10, title: "move train to the next station", action: :move_train_to_the_next_station, description: "move train to the next station" },
-          { id: 11, title: "move train to the previous station", action: :move_train_to_the_previous_station, description: "move train to the previous station" },
+          { id: 10, title: "move train to the next station", action: :move_train_to_the_next_station, description: "move train to the next route station" },
+          { id: 11, title: "move train to the previous station", action: :move_train_to_the_previous_station, description: "move train to the previous route station" },
           { id: 12, title: "show stations list", action: :show_stations_list, description: "show stations list" },
           { id: 13, title: "show trains list for the station", action: :show_trains_list_for_the_station, description: "show trains list for the station" },
           { id: 14, title: "exit", action: :stop, description: "exit" },
@@ -28,6 +28,7 @@ class Logistic
     @stations_array = []
     @trains_array = []
     @routes_array = []
+    @break = false
   end
 
   def start
@@ -39,9 +40,8 @@ class Logistic
       ask_action
       get_action if @command
       do_action
+      break if @break
     end
-
-    puts "Thanks fot your attention!"
   end
 
   private
@@ -67,7 +67,8 @@ class Logistic
   end
 
   def stop
-    return
+    puts "Thanks fot your attention!"
+    @break = true
   end
 
   def help
