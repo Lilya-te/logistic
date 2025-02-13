@@ -5,10 +5,13 @@
 # Может удалять промежуточную станцию из списка
 # Может выводить список всех станций по-порядку от начальной до конечной
 class Route
+  include InstanceCounter
+
   attr_accessor :stations
 
   def initialize(start, finish)
     @stations = [start, finish]
+    self.register_instance
   end
 
   def start_station

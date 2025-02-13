@@ -16,15 +16,25 @@
 # Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
 
 class Train
+  include Company
+  include InstanceCounter
+
   attr_reader :speed, :number, :type
   attr_accessor :route
   attr_writer :carriages
+  @@trains = []
 
   def initialize(number, type)
     @number = number
     @type = type
     @carriages = []
     @speed = 0
+    @@trains << self
+    self.register_instance
+  end
+
+  def self.find(number)
+    @@trains.find {|train| train.number == number }
   end
 
   def route=(route)
