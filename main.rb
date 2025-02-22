@@ -133,6 +133,8 @@ class Logistic
     @trains_array << Train.new(number, type)
 
     succeed_message "#{type} train №'#{number}'"
+  rescue StandardError => e
+    puts "ERROR! #{e.message}"
   end
 
   def create_carriage

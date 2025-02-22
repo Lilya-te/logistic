@@ -29,6 +29,7 @@ class Train
     @type = type
     @carriages = []
     @speed = 0
+    validate!
     @@trains << self
     self.register_instance
   end
@@ -84,5 +85,18 @@ class Train
 
   def carriage_remove
     @carriages.delete_at(-1)
+  end
+
+  def valid?
+    validate!
+    true
+  rescue StandardError
+    false
+  end
+
+  private
+
+  def validate!
+    raise StandardError, 'Invalid train number!' if (number !~ /^\w{3}-?\w{2}$/)
   end
 end

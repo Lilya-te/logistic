@@ -13,6 +13,7 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
+    validate!
     @@stations << self
     self.register_instance
   end
@@ -31,5 +32,11 @@ class Station
 
   def self.all
     @@stations
+  end
+
+  private
+  
+  def validate!
+    nil
   end
 end

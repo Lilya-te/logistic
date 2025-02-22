@@ -11,6 +11,7 @@ class Route
 
   def initialize(start, finish)
     @stations = [start, finish]
+    validate!
     self.register_instance
   end
 
@@ -32,5 +33,11 @@ class Route
 
   def show
     stations.map { |station| station.name }
+  end
+
+  private
+  
+  def validate!
+    nil
   end
 end
