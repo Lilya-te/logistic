@@ -84,6 +84,8 @@ class Logistic
     @stations_array << new_station
 
     new_station
+  rescue StandardError => e
+    failure_message(e.message)
   end
 
   def choose_route
@@ -118,6 +120,10 @@ class Logistic
     puts "#{text} successfully created"
   end
 
+  def failure_message(text)
+    puts "ERROR! #{text}"
+  end
+
   def create_station
     puts "Station name:"
     name = gets.chomp
@@ -134,7 +140,7 @@ class Logistic
 
     succeed_message "#{type} train №'#{number}'"
   rescue StandardError => e
-    puts "ERROR! #{e.message}"
+    failure_message(e.message)
   end
 
   def create_carriage
@@ -145,6 +151,8 @@ class Logistic
     @trains_array << Carriage.new(type)
 
     succeed_message "#{type} carriage №'#{number}'"
+  rescue StandardError => e
+    failure_message(e.message)
   end
 
   def create_route
@@ -160,6 +168,8 @@ class Logistic
     @routes_array << Route.new(start_station, finish_station)
 
     succeed_message "Route from '#{start_station_name}' to '#{finish_station_name}'"
+  rescue StandardError => e
+    failure_message(e.message)
   end
 
   def add_route_station # add route station
