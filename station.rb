@@ -34,9 +34,16 @@ class Station
     @@stations
   end
 
+  def valid?
+    validate!
+    true
+  rescue StandardError
+    false
+  end
+
   private
   
   def validate!
-    nil
+    raise StandardError, 'Invalid station name!' if (name !~ /^[\w-]{1,}$/)
   end
 end

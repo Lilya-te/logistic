@@ -35,9 +35,16 @@ class Route
     stations.map { |station| station.name }
   end
 
+  def valid?
+    validate!
+    true
+  rescue StandardError
+    false
+  end
+
   private
-  
+
   def validate!
-    nil
+    raise StandardError, 'Invalid stations.' unless stations.any? { |station| station.is_a?(Station) }
   end
 end

@@ -16,8 +16,8 @@ class Carriage
   end
 
   private
-  
+
   def validate!
-    nil
+    raise StandardError, 'Invalid type.' if type.nil?
   end
 end
