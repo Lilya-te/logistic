@@ -1,18 +1,12 @@
 class Carriage
   include Company
+  include Validation
 
   attr_reader :type
 
   def initialize(type)
     @type = type
     validate!
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   private

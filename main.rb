@@ -1,4 +1,5 @@
 require_relative 'instance_counter'
+require_relative 'validation'
 require_relative 'company'
 require_relative 'train'
 require_relative 'carriage'
@@ -86,6 +87,7 @@ class Logistic
     new_station
   rescue StandardError => e
     failure_message(e.message)
+    retry
   end
 
   def choose_route
@@ -121,7 +123,7 @@ class Logistic
   end
 
   def failure_message(text)
-    puts "ERROR! #{text}"
+    puts "ERROR! #{text}\n===Try again===\n***************"
   end
 
   def create_station
@@ -141,6 +143,7 @@ class Logistic
     succeed_message "#{type} train №'#{number}'"
   rescue StandardError => e
     failure_message(e.message)
+    retry
   end
 
   def create_carriage
@@ -153,6 +156,7 @@ class Logistic
     succeed_message "#{type} carriage №'#{number}'"
   rescue StandardError => e
     failure_message(e.message)
+    retry
   end
 
   def create_route
@@ -170,6 +174,7 @@ class Logistic
     succeed_message "Route from '#{start_station_name}' to '#{finish_station_name}'"
   rescue StandardError => e
     failure_message(e.message)
+    retry
   end
 
   def add_route_station # add route station

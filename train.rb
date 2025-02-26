@@ -18,6 +18,7 @@
 class Train
   include Company
   include InstanceCounter
+  include Validation
 
   attr_reader :speed, :number, :type
   attr_accessor :route
@@ -85,13 +86,6 @@ class Train
 
   def carriage_remove
     @carriages.delete_at(-1)
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   private

@@ -6,6 +6,7 @@
 # Может отправлять поезда (по одному за раз, при этом, поезд удаляется из списка поездов, находящихся на станции).
 class Station
   include InstanceCounter
+  include Validation
 
   attr_reader :name, :trains
   @@stations = []
@@ -32,13 +33,6 @@ class Station
 
   def self.all
     @@stations
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   private

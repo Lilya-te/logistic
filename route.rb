@@ -6,6 +6,7 @@
 # Может выводить список всех станций по-порядку от начальной до конечной
 class Route
   include InstanceCounter
+  include Validation
 
   attr_accessor :stations
 
@@ -33,13 +34,6 @@ class Route
 
   def show
     stations.map { |station| station.name }
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   private
