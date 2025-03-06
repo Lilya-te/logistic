@@ -273,10 +273,20 @@ class Logistic
       return
     end
 
-    type = choose_type
     @stations_array.each do |s|
-      puts "#{s.name} - #{s.trains_by_type(type)}"
+      puts "Station name: #{s.name}"
+      s.trains_block do |train|
+        puts "Train number #{train.number}, #{train.type}"
+        n = 0
+        train.carriages_block do |carriage|
+          puts "Number: #{n += 1}, " \
+           "type: #{carriage.type}" \
+           "--#{ "volume: #{carriage.volume}, free volume: #{carriage.free_volume}" if carriage.type == CargoTrain::TRAIN_TYPE }"\
+           "--#{ "seats: #{carriage.seats}, free seats: #{carriage.free_seats}" if carriage.type == PassengerTrain::TRAIN_TYPE }"
+        end
+      end
     end
+
   end
 
   def buy_ticket
