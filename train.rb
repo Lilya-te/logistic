@@ -21,8 +21,7 @@ class Train
   include Validation
 
   attr_reader :speed, :number, :type
-  attr_accessor :route
-  attr_writer :carriages
+  attr_accessor :route, :carriages
   @@trains = []
 
   def initialize(number, type)
@@ -81,11 +80,15 @@ class Train
   end
 
   def carriage_add(carriage)
-    @carriages << carriage if type == carriage.type
+    carriages << carriage if type == carriage.type
   end
 
   def carriage_remove
-    @carriages.delete_at(-1)
+    carriages.delete_at(-1)
+  end
+
+  def carriages_block(&block)
+    carriages.each { |carriage| yield(carriage) if block_given? }
   end
 
   private

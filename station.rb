@@ -35,6 +35,10 @@ class Station
     @@stations
   end
 
+  def trains_block(&block)
+    trains.each { |train| yield(train) if block_given? }
+  end
+
   private
   
   def validate!

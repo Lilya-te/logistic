@@ -14,18 +14,20 @@ class Logistic
   MENU = [{ id: 1, title: "create station", action: :create_station, description: "create new station" },
           { id: 2, title: "create train", action: :create_train, description: "create passenger or cargo train" },
           { id: 3, title: "create route", action: :create_route, description: "create new route" },
-          { id: 4, title: "create carriage", action: :create_carriage, description: "create passenger or cargo carriage" },
-          { id: 5, title: "add route station", action: :add_route_station, description: "add existed or new station to the route" },
-          { id: 6, title: "remove route station", action: :remove_route_station, description: "remove station from route" },
-          { id: 7, title: "assign route for train", action: :assign_route_for_train, description: "assign existed route for existed train" },
-          { id: 8, title: "add carriage to train", action: :add_carriage_to_train, description: "add carriage to train" },
-          { id: 9, title: "remove carriage from train", action: :remove_carriage_from_train, description: "remove carriage from train" },
-          { id: 10, title: "move train to the next station", action: :move_train_to_the_next_station, description: "move train to the next route station" },
-          { id: 11, title: "move train to the previous station", action: :move_train_to_the_previous_station, description: "move train to the previous route station" },
-          { id: 12, title: "show stations list", action: :show_stations_list, description: "show stations list" },
-          { id: 13, title: "show trains list for the station", action: :show_trains_list_for_the_station, description: "show trains list for the station" },
-          { id: 14, title: "exit", action: :stop, description: "exit" },
-          { id: 15, title: "show commands", action: :help, description: "show commands" }]
+          { id: 4, title: "add route station", action: :add_route_station, description: "add existed or new station to the route" },
+          { id: 5, title: "remove route station", action: :remove_route_station, description: "remove station from route" },
+          { id: 6, title: "assign route for train", action: :assign_route_for_train, description: "assign existed route for existed train" },
+          { id: 7, title: "add carriage to train", action: :add_carriage_to_train, description: "add carriage to train" },
+          { id: 8, title: "remove carriage from train", action: :remove_carriage_from_train, description: "remove carriage from train" },
+          { id: 9, title: "buy ticket on train", action: :buy_ticket, description: "buy ticket on train" },
+          { id: 10, title: "upload cargo carriage", action: :upload, description: "upload cargo carriage" },
+          { id: 11, title: "move train to the next station", action: :move_train_to_the_next_station, description: "move train to the next route station" },
+          { id: 12, title: "move train to the previous station", action: :move_train_to_the_previous_station, description: "move train to the previous route station" },
+          { id: 13, title: "show stations list", action: :show_stations_list, description: "show stations list" },
+          { id: 14, title: "show trains list for the station", action: :show_trains_list_for_the_station, description: "show trains list for the station" },
+          { id: 15, title: "show train carriages", action: :train_carriages, description: "show train carriages list" },
+          { id: 16, title: "exit", action: :stop, description: "exit" },
+          { id: 17, title: "show commands", action: :help, description: "show commands" }]
 
   def initialize
     @stations_array = []
@@ -102,20 +104,21 @@ class Logistic
     puts "There is no route!"
   end
 
-  def choose_train
-    unless @trains_array.empty?
+  def choose_train(type = nil)
+    trains = type.nil? ? @trains_array : @trains_array.select { |train| train.type == type }
+    unless trains.empty?
       puts "Choose the train:"
-      @trains_array.each do |t|
+      trains.each do |t|
         puts "#{t.type} train number #{t.number} - this one? (y/n)"
         return t if gets.chomp == 'y'
       end
     end
-    puts "There is no train!"
+    puts "There is no more train!"
   end
 
   def choose_type
     puts "Train type: passenger or cargo"
-    gets.chomp.upcase.to_sym
+    gets.chomp.to_sym
   end
 
   def succeed_message(text)
@@ -141,19 +144,6 @@ class Logistic
     @trains_array << Train.new(number, type)
 
     succeed_message "#{type} train №'#{number}'"
-  rescue StandardError => e
-    failure_message(e.message)
-    retry
-  end
-
-  def create_carriage
-    type = choose_type
-
-    puts "Carriage number:"
-    number = gets.chomp
-    @trains_array << Carriage.new(type)
-
-    succeed_message "#{type} carriage №'#{number}'"
   rescue StandardError => e
     failure_message(e.message)
     retry
@@ -216,11 +206,29 @@ class Logistic
     puts "Train #{current_train.number} is on the route #{current_route.show}"
   end
 
+  def train_carriages
+    current_train = choose_train
+    n = 0
+    current_train.carriages_block do |carriage|
+      puts "Number: #{n += 1}, " \
+           "type: #{carriage.type}" \
+           "--#{ "volume: #{carriage.volume}, free volume: #{carriage.free_volume}" if carriage.type == CargoTrain::TRAIN_TYPE }"\
+           "--#{ "seats: #{carriage.seats}, free seats: #{carriage.free_seats}" if carriage.type == PassengerTrain::TRAIN_TYPE }"
+    end
+  end
+
   def add_carriage_to_train
     current_train = choose_train
     return if current_train.nil?
 
-    current_carriage = Carriage.new(current_train.type)
+    puts "Input volume or seats:"
+    capacity = gets.chomp
+    current_carriage = if current_train.type == CargoTrain::TRAIN_TYPE
+                         CargoCarriage.new(capacity)
+                       else
+                         PassengerCarriage.new(capacity)
+                       end
+
     current_train.carriage_add(current_carriage)
     succeed_message("Carriage for train №#{current_train.number}")
   end
@@ -268,6 +276,49 @@ class Logistic
     type = choose_type
     @stations_array.each do |s|
       puts "#{s.name} - #{s.trains_by_type(type)}"
+    end
+  end
+
+  def buy_ticket
+    train = choose_train(:passenger)
+    number = 0
+    train.carriages.each do |carriage|
+      begin
+        number += 1
+        puts "Would you like to choose #{number} carriage? (y/n)"
+
+        if gets.chomp == 'y'
+          my_seat = carriage.buy_ticket
+          puts "Your ticket is - train number: #{train.number}, carriage number: #{number}, seat: #{my_seat}"
+          break
+        end
+      rescue StandardError => e
+        puts "#{e.message} Try next carriage"
+        next
+      end
+    end
+  end
+
+  def upload
+    train = choose_train(:cargo)
+    number = 0
+    puts "Input items count"
+
+    items = gets.chomp.to_f
+    train.carriages.each do |carriage|
+      begin
+        number += 1
+        puts "Would you like to choose #{number} carriage? (y/n)"
+
+        if gets.chomp == 'y'
+          my_carriage = carriage.upload(items)
+          puts "Your items are in train number #{train.number}, carriage number: #{my_carriage}"
+          break
+        end
+      rescue StandardError => e
+        puts e.message
+        next
+      end
     end
   end
 end
