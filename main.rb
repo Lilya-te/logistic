@@ -20,7 +20,7 @@ class Logistic
           { id: 7, title: "add carriage to train", action: :add_carriage_to_train, description: "add carriage to train" },
           { id: 8, title: "remove carriage from train", action: :remove_carriage_from_train, description: "remove carriage from train" },
           { id: 9, title: "buy ticket on train", action: :buy_ticket, description: "buy ticket on train" },
-          { id: 10, title: "upload cargo carriage", action: :upload, description: "upload cargo carriage" },
+          { id: 10, title: "upload cargo carriage", action: :upload_cargo_train, description: "upload cargo carriage" },
           { id: 11, title: "move train to the next station", action: :move_train_to_the_next_station, description: "move train to the next route station" },
           { id: 12, title: "move train to the previous station", action: :move_train_to_the_previous_station, description: "move train to the previous route station" },
           { id: 13, title: "show stations list", action: :show_stations_list, description: "show stations list" },
@@ -299,7 +299,7 @@ class Logistic
     end
   end
 
-  def upload
+  def upload_cargo_train
     train = choose_train(:cargo)
     number = 0
     puts "Input items count"
