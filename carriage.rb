@@ -20,6 +20,11 @@ class Carriage
     capacity - filled_capacity
   end
 
+  def show_info(unit_name)
+    "Type: #{self.type.capitalize}. " \
+    "#{unit_name.capitalize}: #{self.capacity}, free #{unit_name}: #{self.free_capacity}"
+  end
+
   private
 
   def validate!

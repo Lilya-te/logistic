@@ -19,15 +19,14 @@ class Logistic
           { id: 6, title: "assign route for train", action: :assign_route_for_train, description: "assign existed route for existed train" },
           { id: 7, title: "add carriage to train", action: :add_carriage_to_train, description: "add carriage to train" },
           { id: 8, title: "remove carriage from train", action: :remove_carriage_from_train, description: "remove carriage from train" },
-          { id: 9, title: "buy ticket on train", action: :buy_ticket, description: "buy ticket on train" },
-          { id: 10, title: "upload cargo carriage", action: :upload_cargo_train, description: "upload cargo carriage" },
-          { id: 11, title: "move train to the next station", action: :move_train_to_the_next_station, description: "move train to the next route station" },
-          { id: 12, title: "move train to the previous station", action: :move_train_to_the_previous_station, description: "move train to the previous route station" },
-          { id: 13, title: "show stations list", action: :show_stations_list, description: "show stations list" },
-          { id: 14, title: "show trains list for the station", action: :show_trains_list_for_the_station, description: "show trains list for the station" },
-          { id: 15, title: "show train carriages", action: :train_carriages, description: "show train carriages list" },
-          { id: 16, title: "exit", action: :stop, description: "exit" },
-          { id: 17, title: "show commands", action: :help, description: "show commands" }]
+          { id: 9, title: "upload cargo carriage or buy ticket to passenger train", action: :upload_train, description: "upload cargo carriage" },
+          { id: 10, title: "move train to the next station", action: :move_train_to_the_next_station, description: "move train to the next route station" },
+          { id: 11, title: "move train to the previous station", action: :move_train_to_the_previous_station, description: "move train to the previous route station" },
+          { id: 12, title: "show stations list", action: :show_stations_list, description: "show stations list" },
+          { id: 13, title: "show trains list for the station", action: :show_trains_list_for_the_station, description: "show trains list for the station" },
+          { id: 14, title: "show train carriages", action: :train_carriages, description: "show train carriages list" },
+          { id: 15, title: "exit", action: :stop, description: "exit" },
+          { id: 16, title: "show commands", action: :help, description: "show commands" }]
 
   def initialize
     @stations_array = []
@@ -209,12 +208,7 @@ class Logistic
   def train_carriages
     current_train = choose_train
     n = 0
-    current_train.carriages_block do |carriage|
-      puts "Number: #{n += 1}, " \
-           "type: #{carriage.type}" \
-           "--#{ "volume: #{carriage.volume}, free volume: #{carriage.free_volume}" if carriage.type == CargoTrain::TRAIN_TYPE }"\
-           "--#{ "seats: #{carriage.seats}, free seats: #{carriage.free_seats}" if carriage.type == PassengerTrain::TRAIN_TYPE }"
-    end
+    current_train.carriages_block { |carriage| puts "Number: #{n += 1}, #{carriage.show_info}" }
   end
 
   def add_carriage_to_train
@@ -278,57 +272,27 @@ class Logistic
       s.trains_block do |train|
         puts "Train number #{train.number}, #{train.type}"
         n = 0
-        train.carriages_block do |carriage|
-          puts "Number: #{n += 1}, " \
-           "type: #{carriage.type}" \
-           "--#{ "volume: #{carriage.volume}, free volume: #{carriage.free_volume}" if carriage.type == CargoTrain::TRAIN_TYPE }"\
-           "--#{ "seats: #{carriage.seats}, free seats: #{carriage.free_seats}" if carriage.type == PassengerTrain::TRAIN_TYPE }"
-        end
-      end
-    end
-
-  end
-
-  def buy_ticket
-    train = choose_train(:passenger)
-    number = 0
-    train.carriages.each do |carriage|
-      begin
-        number += 1
-        puts "Would you like to choose #{number} carriage? (y/n)"
-
-        if gets.chomp == 'y'
-          my_seat = carriage.buy_ticket
-          puts "Your ticket is - train number: #{train.number}, carriage number: #{number}, seat: #{my_seat}"
-          break
-        end
-      rescue StandardError => e
-        puts "#{e.message} Try next carriage"
-        next
+        train.carriages_block { |carriage| puts "Number: #{n += 1}, #{carriage.show_info}" }
       end
     end
   end
 
-  def upload_cargo_train
+  def upload_train
     train = choose_train(:cargo)
-    number = 0
-    puts "Input items count"
+    if train.type == CargoTrain::TRAIN_TYPE
+      puts "Input items count"
+      items = gets.chomp.to_f
+    end
 
-    items = gets.chomp.to_f
-    train.carriages.each do |carriage|
+    train.carriages_block do |carriage|
       begin
-        number += 1
-        puts "Would you like to choose #{number} carriage? (y/n)"
-
-        if gets.chomp == 'y'
-          my_carriage = carriage.upload(items)
-          puts "Your items are in train number #{train.number}, carriage number: #{my_carriage}"
-          break
-        end
-      rescue StandardError => e
-        puts e.message
+        carriage.upload(items) if train.type == CargoTrain::TRAIN_TYPE
+        carriage.buy_ticket if train.type == PassengerTrain::TRAIN_TYPE
+        break
+      rescue StandardError
         next
       end
     end
+    puts "It's done!"
   end
 end

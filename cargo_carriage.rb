@@ -12,4 +12,8 @@ class CargoCarriage < Carriage
   def free_volume
     self.free_capacity
   end
+
+  def show_info
+    super('volume')
+  end
 end

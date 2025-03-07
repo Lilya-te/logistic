@@ -16,4 +16,8 @@ class PassengerCarriage < Carriage
   def free_seats
     self.free_capacity
   end
+
+  def show_info
+    super('seats')
+  end
 end
