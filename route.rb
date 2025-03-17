@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Класс Route (Маршрут):
 # Имеет начальную и конечную станцию, а также список промежуточных станций.
 # Начальная и конечная станции указываютсся при создании маршрута, а промежуточные могут добавляться между ними.
@@ -13,7 +15,7 @@ class Route
   def initialize(start, finish)
     @stations = [start, finish]
     validate!
-    self.register_instance
+    register_instance
   end
 
   def start_station
@@ -33,7 +35,7 @@ class Route
   end
 
   def show
-    stations.map { |station| station.name }
+    stations.map(&:name)
   end
 
   private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Класс Train (Поезд):
 # Имеет номер (произвольная строка) и тип (грузовой, пассажирский) и количество вагонов,
 # эти данные указываются при создании экземпляра класса
@@ -20,8 +22,9 @@ class Train
   include InstanceCounter
   include Validation
 
-  attr_reader :speed, :number, :type
-  attr_accessor :route, :carriages
+  attr_reader :route, :speed, :number, :type
+  attr_accessor :carriages
+
   @@trains = []
 
   def initialize(number, type)
@@ -31,11 +34,11 @@ class Train
     @speed = 0
     validate!
     @@trains << self
-    self.register_instance
+    register_instance
   end
 
   def self.find(number)
-    @@trains.find {|train| train.number == number }
+    @@trains.find { |train| train.number == number }
   end
 
   def route=(route)
@@ -68,11 +71,9 @@ class Train
   end
 
   def speed_down
-    if @speed == 0
-      return 0
-    else
-      @speed -= 1
-    end
+    return 0 if @speed.zero?
+
+    @speed -= 1
   end
 
   def extreme_stop
@@ -87,13 +88,13 @@ class Train
     carriages.delete_at(-1)
   end
 
-  def carriages_block(&block)
+  def carriages_block
     carriages.each { |carriage| yield(carriage) if block_given? }
   end
 
   private
 
   def validate!
-    raise StandardError, 'Invalid train number!' if (number !~ /^\w{3}-?\w{2}$/)
+    raise StandardError, 'Invalid train number!' if number !~ /^\w{3}-?\w{2}$/
   end
 end

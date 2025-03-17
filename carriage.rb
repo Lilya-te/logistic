@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Carriage
   include Company
   include Validation
@@ -7,12 +9,13 @@ class Carriage
   def initialize(type, capacity)
     @type = type
     @capacity = capacity
-    @filled_capacity = 0
+    @filled_capacity ||= 0
     validate!
   end
 
   def upload(units)
-    raise StandardError, "Not enough space" if free_capacity < units
+    raise StandardError, 'Not enough space' if free_capacity < units
+
     @filled_capacity += units
   end
 
@@ -21,8 +24,8 @@ class Carriage
   end
 
   def show_info(unit_name)
-    "Type: #{self.type.capitalize}. " \
-    "#{unit_name.capitalize}: #{self.capacity}, free #{unit_name}: #{self.free_capacity}"
+    "Type: #{type.capitalize}. " \
+    "#{unit_name.capitalize}: #{capacity}, free #{unit_name}: #{free_capacity}"
   end
 
   private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InstanceCounter
   @@instances = 0
 
@@ -21,8 +23,8 @@ module InstanceCounter
   end
 
   module InstanceMethods
-
     protected
+
     def register_instance
       InstanceCounter.register_instance
     end

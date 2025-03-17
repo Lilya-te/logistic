@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Класс Station (Станция):
 #   Имеет название, которое указывается при ее создании
 # Может принимать поезда (по одному за раз)
@@ -9,6 +11,7 @@ class Station
   include Validation
 
   attr_reader :name, :trains
+
   @@stations = []
 
   def initialize(name)
@@ -16,11 +19,11 @@ class Station
     @trains = []
     validate!
     @@stations << self
-    self.register_instance
+    register_instance
   end
 
   def trains_by_type(type)
-    trains.select {|train| train.type == type}.count
+    trains.select { |train| train.type == type }.count
   end
 
   def accept_train(train)
@@ -35,13 +38,13 @@ class Station
     @@stations
   end
 
-  def trains_block(&block)
+  def trains_block
     trains.each { |train| yield(train) if block_given? }
   end
 
   private
-  
+
   def validate!
-    raise StandardError, 'Invalid station name!' if (name !~ /^[\w-]{1,}$/)
+    raise StandardError, 'Invalid station name!' if name !~ /^[\w-]{1,}$/
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CargoCarriage < Carriage
   attr_reader :filled_volume
 
@@ -6,11 +8,11 @@ class CargoCarriage < Carriage
   end
 
   def volume
-    self.capacity
+    capacity
   end
 
   def free_volume
-    self.free_capacity
+    free_capacity
   end
 
   def show_info

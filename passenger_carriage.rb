@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PassengerCarriage < Carriage
   attr_reader :tickets
 
@@ -6,15 +8,15 @@ class PassengerCarriage < Carriage
   end
 
   def seats
-    self.capacity
+    capacity
   end
 
   def buy_ticket
-    self.upload(1)
+    upload(1)
   end
 
   def free_seats
-    self.free_capacity
+    free_capacity
   end
 
   def show_info
