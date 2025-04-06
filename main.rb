@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'accessors'
 require_relative 'instance_counter'
 require_relative 'validation'
 require_relative 'company'
