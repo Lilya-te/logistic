@@ -16,23 +16,32 @@
 # Может перемещаться между станциями, указанными в маршруте. Перемещение возможно вперед и назад,
 # но только на 1 станцию за раз.
 # Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
+require_relative 'route'
 
 class Train
   include Company
   include InstanceCounter
-  include Validation
+  extend Validation
+  extend Accessors
 
-  attr_reader :route, :speed, :number, :type
-  attr_accessor :carriages
+  attr_reader :number, :type
+  attr_accessor :route, :carriages
+
+  strong_attr_accessor :type, Symbol
+  attr_accessor_with_history :speed
+
+  validate :number, :presence
+  validate :number, :format, /^\w{3}-?\w{2}$/
+  validate :number, :type, String
 
   @@trains = []
 
   def initialize(number, type)
+    puts("!!!!! initialize number = #{number}")
     @number = number
     @type = type
     @carriages = []
     @speed = 0
-    validate!
     @@trains << self
     register_instance
   end
@@ -67,17 +76,17 @@ class Train
   end
 
   def speed_up
-    @speed += 1
+    self.speed += 1
   end
 
   def speed_down
-    return 0 if @speed.zero?
+    return 0 if self.speed.zero?
 
-    @speed -= 1
+    self.speed -= 1
   end
 
   def extreme_stop
-    @speed = 0
+    self.speed = 0
   end
 
   def carriage_add(carriage)
@@ -90,11 +99,5 @@ class Train
 
   def carriages_block
     carriages.each { |carriage| yield(carriage) if block_given? }
-  end
-
-  private
-
-  def validate!
-    raise StandardError, 'Invalid train number!' if number !~ /^\w{3}-?\w{2}$/
   end
 end

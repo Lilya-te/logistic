@@ -38,6 +38,10 @@ class Route
     stations.map(&:name)
   end
 
+  def name
+    "#{stations[0].name} -> #{stations[-1].name}"
+  end
+
   private
 
   def validate!
