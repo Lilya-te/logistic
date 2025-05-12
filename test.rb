@@ -42,6 +42,7 @@ require_relative 'station'
 
 # Validation
 puts "VALIDATION PRECENCE"
+
 begin
   Train.new('AAA-11', :cargo).validate!
 rescue => e
