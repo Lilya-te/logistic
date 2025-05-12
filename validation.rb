@@ -22,7 +22,6 @@ module Validation
 
       case validation_type
       when :presence
-        puts "presence"
         raise(StandardError, "Attribute #{attribute_name} value must not be nil or empty.") if attribute_value.to_s.strip.empty?
 
       when :format
@@ -32,7 +31,6 @@ module Validation
         raise(StandardError, "Attribute #{attribute_name} value must be #{format_regexp} format.") unless format_regexp.match? attribute_value
 
       when :type
-        puts "type"
         attribute_class = args[0]
         raise(StandardError, "Attribute #{attribute_name} value must be #{attribute_class}.") unless attribute_value.is_a?(attribute_class)
 
@@ -41,9 +39,8 @@ module Validation
 
     @@validations ||= []
     @@validations << method_name
-    puts("@@validations = #{@@validations}")
+
     define_method(:validate!) do
-      puts("@@validations = #{@@validations}")
       @@validations.each do |validate|
         eval "self.#{validate}"
       end
