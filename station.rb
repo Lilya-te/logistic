@@ -8,9 +8,13 @@
 # Может отправлять поезда (по одному за раз, при этом, поезд удаляется из списка поездов, находящихся на станции).
 class Station
   include InstanceCounter
-  include Validation
+  extend Validation
 
   attr_reader :name, :trains
+
+  validate :name, :presence
+  validate :name, :format, /^[\w-]{1,}$/
+  validate :name, :type, String
 
   @@stations = []
 
@@ -40,11 +44,5 @@ class Station
 
   def trains_block
     trains.each { |train| yield(train) if block_given? }
-  end
-
-  private
-
-  def validate!
-    raise StandardError, 'Invalid station name!' if name !~ /^[\w-]{1,}$/
   end
 end

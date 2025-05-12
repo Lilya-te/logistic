@@ -2,7 +2,9 @@
 
 class Carriage
   include Company
-  include Validation
+  extend Validation
+
+  validate :type, :presence
 
   attr_reader :type, :capacity, :filled_capacity
 
@@ -26,11 +28,5 @@ class Carriage
   def show_info(unit_name)
     "Type: #{type.capitalize}. " \
     "#{unit_name.capitalize}: #{capacity}, free #{unit_name}: #{free_capacity}"
-  end
-
-  private
-
-  def validate!
-    raise StandardError, 'Invalid type.' if type.nil?
   end
 end

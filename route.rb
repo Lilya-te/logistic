@@ -8,7 +8,7 @@
 # Может выводить список всех станций по-порядку от начальной до конечной
 class Route
   include InstanceCounter
-  include Validation
+  extend Validation
 
   attr_accessor :stations
 
