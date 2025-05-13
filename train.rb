@@ -37,12 +37,12 @@ class Train
   @@trains = []
 
   def initialize(number, type)
-    puts("!!!!! initialize number = #{number}")
     @number = number
     @type = type
     @carriages = []
     @speed = 0
     @@trains << self
+    validate!
     register_instance
   end
 

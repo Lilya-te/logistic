@@ -17,6 +17,10 @@ module Validation
     raise(StandardError, 'Undefined validation type.') unless %i[presence format type].include?(validation_type)
     method_name = "#{attribute_name}_#{validation_type}".to_sym
 
+    @@validations ||= {}
+    @@validations[self] ||= [] 
+    @@validations[self] << method_name
+
     define_method(method_name) do
       attribute_value = instance_variable_get("@#{attribute_name}")
 
@@ -37,11 +41,8 @@ module Validation
       end
     end
 
-    @@validations ||= []
-    @@validations << method_name
-
     define_method(:validate!) do
-      @@validations.each do |validate|
+      @@validations[self.class].each do |validate|
         eval "self.#{validate}"
       end
     end

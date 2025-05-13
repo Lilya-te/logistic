@@ -89,7 +89,8 @@ class Logistic
     end
   end
 
-  def create_new_station(name)
+  def create_new_station
+    name = gets.chomp 
     new_station = Station.new(name)
     @stations_array << new_station
 
@@ -137,8 +138,7 @@ class Logistic
 
   def create_station
     puts 'Station name:'
-    name = gets.chomp
-    create_new_station name
+    name = create_new_station
     succeed_message "Station #{name}"
   end
 
@@ -156,7 +156,7 @@ class Logistic
   end
 
   def find_or_create_station(name)
-    @stations_array.find { |s| s.name == name } || create_new_station(name)
+    @stations_array.find { |s| s.name == name } || create_new_station
   end
 
   def create_route
@@ -184,7 +184,7 @@ class Logistic
     else
       puts "Chose station name from #{@stations_array.map(&:name)} or input new one."
       station_name = gets.chomp
-      current_route.add_station(@stations_array.find { |s| s.name == station_name } || create_new_station(station_name))
+      current_route.add_station(@stations_array.find { |s| s.name == station_name } || create_new_station)
       puts "Station add to route #{current_route.show}"
     end
   end
